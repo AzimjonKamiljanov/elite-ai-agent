@@ -112,12 +112,33 @@ class AIRouter:
 
     def __init__(self) -> None:
         self._config = _load_config()
-        self._api_keys: dict[str, Optional[str]] = {
-            "gemini": os.getenv("GEMINI_API_KEY_1") or os.getenv("GEMINI_API_KEY_2"),
-            "deepseek": os.getenv("DEEPSEEK_API_KEY"),
-            "openrouter": os.getenv("OPENROUTER_API_KEY"),
-            "groq": os.getenv("GROQ_API_KEY"),
-            "huggingface": os.getenv("HUGGINGFACE_API_KEY"),
+        self._api_keys: dict[str, Optional[str]] = {}
+        self._load_api_keys()
+
+    def _load_api_keys(self) -> None:
+        """API kalitlarini atrof-muhitdan yoki .env dan qayta yuklash."""
+        # Ensure we try reading from .env if dotenv_values is available
+        env_vals = {}
+        try:
+            from dotenv import dotenv_values
+            env_file = Path(__file__).parent.parent / ".env"
+            if env_file.exists():
+                env_vals = dotenv_values(str(env_file))
+        except ImportError:
+            pass
+
+        def get_val(key: str) -> Optional[str]:
+            val = env_vals.get(key) or os.getenv(key)
+            if val and not val.startswith("your_"):
+                return val
+            return None
+
+        self._api_keys = {
+            "gemini": get_val("GEMINI_API_KEY_1") or get_val("GEMINI_API_KEY_2"),
+            "deepseek": get_val("DEEPSEEK_API_KEY"),
+            "openrouter": get_val("OPENROUTER_API_KEY"),
+            "groq": get_val("GROQ_API_KEY"),
+            "huggingface": get_val("HUGGINGFACE_API_KEY"),
         }
         self._forced_provider: Optional[str] = None
         self._forced_model: Optional[str] = None
