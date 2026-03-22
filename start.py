@@ -306,15 +306,21 @@ def run_jarvis(args: argparse.Namespace) -> None:
             try:
                 from life import HomeworkManager
                 hw = HomeworkManager()
-                existing_tasks = [
-                    {
-                        "title": t.title,
-                        "start_time": getattr(t, "start_time", ""),
-                        "end_time": getattr(t, "end_time", ""),
-                    }
-                    for t in hw.get_all_pending()
-                    if not isinstance(t, dict)
-                ]
+                existing_tasks = []
+                for entry in hw.get_all_pending():
+                    if isinstance(entry, dict) and "item" in entry:
+                        t = entry["item"]
+                    else:
+                        t = entry
+
+                    if not isinstance(t, dict):
+                        # Some items are objects like Task/Homework that have a title or subject
+                        title = getattr(t, "title", getattr(t, "subject", ""))
+                        existing_tasks.append({
+                            "title": title,
+                            "start_time": getattr(t, "start_time", ""),
+                            "end_time": getattr(t, "end_time", ""),
+                        })
             except Exception:
                 existing_tasks = []
 

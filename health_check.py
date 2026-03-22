@@ -93,12 +93,17 @@ def check_dependencies() -> list[tuple[str, bool, str]]:
 
 def check_env_keys() -> list[tuple[str, bool, str]]:
     env_file = ROOT / ".env"
-    if not env_file.exists():
-        return [(".env fayli", False, "Topilmadi")]
 
+    results = []
+    if not env_file.exists():
+        results.append((".env fayli", False, "Topilmadi (setup.py ni ishlating)"))
+    else:
+        results.append((".env fayli", True, "Mavjud"))
+
+    # Optional load dotenv
     try:
         from dotenv import dotenv_values
-        env_vals = dotenv_values(str(env_file))
+        env_vals = dotenv_values(str(env_file)) if env_file.exists() else {}
     except ImportError:
         env_vals = {}
 
@@ -110,7 +115,6 @@ def check_env_keys() -> list[tuple[str, bool, str]]:
         "GROQ_API_KEY",
         "HUGGINGFACE_API_KEY",
     ]
-    results = []
     for key in keys:
         val = env_vals.get(key) or os.getenv(key, "")
         if val and not val.startswith("your_"):
@@ -155,12 +159,22 @@ def check_providers() -> list[tuple[str, bool, str]]:
         ("Groq", ["GROQ_API_KEY"]),
         ("HuggingFace", ["HUGGINGFACE_API_KEY"]),
     ]
+
+    try:
+        from dotenv import dotenv_values
+        env_vals = dotenv_values(str(ROOT / ".env")) if (ROOT / ".env").exists() else {}
+    except ImportError:
+        env_vals = {}
+
     results = []
     for name, keys in providers:
-        has_key = any(
-            (os.getenv(k) or "").strip() and not (os.getenv(k) or "").startswith("your_")
-            for k in keys
-        )
+        # check both env_vals (if we could load them) and os.getenv
+        has_key = False
+        for k in keys:
+            val = env_vals.get(k) or os.getenv(k, "")
+            if val and not val.startswith("your_"):
+                has_key = True
+                break
         results.append((name, has_key, "API kalit mavjud" if has_key else "API kalit yo'q"))
     return results
 
