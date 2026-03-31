@@ -1,0 +1,22 @@
+{
+  "modes": {
+    "default": "pro",
+    "available": ["fast", "code", "pro", "study", "planner", "focus", "analytics", "automation"]
+  },
+  "life_defaults": {
+    "wake_up_time": "07:00",
+    "class_alert_minutes": 15,
+    "daily_review_time": "22:00"
+  },
+  "ui": {
+    "rich_banner": true,
+    "show_model_info": true,
+    "show_latency": true,
+    "theme": "cyan"
+  },
+  "performance": {
+    "use_uvloop": true,
+    "use_orjson": true,
+    "cache_prompts": true
+  }
+}
