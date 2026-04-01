@@ -6,9 +6,13 @@ Qo'llab-quvvatlanadigan provayderlar: Gemini, DeepSeek, OpenRouter, Groq, Huggin
 from __future__ import annotations
 
 import json
+import logging
 import os
 from pathlib import Path
 from typing import Any, Optional
+
+# Logging sozlash
+logger = logging.getLogger(__name__)
 
 try:
     from openai import OpenAI  # type: ignore
@@ -259,10 +263,14 @@ class AIRouter:
                     max_tokens=max_tokens,
                 )
                 return response.choices[0].message.content or ""
-            except Exception as exc:
+            except Exception:
+                logger.exception(
+                    f"Error in forced provider '{provider}' with model '{selected_model}'"
+                )
                 raise RuntimeError(
-                    f"'{provider}' provayderida '{selected_model}' modeli bilan xato: {exc}"
-                ) from exc
+                    f"'{provider}' provayderida xatolik yuz berdi. "
+                    f"Iltimos, API kalitini yoki provayder holatini tekshiring."
+                ) from None
 
         # Avtomatik rejim — fallback_order bo'yicha
         fallback_order: list[str] = self._config.get(
@@ -296,9 +304,10 @@ class AIRouter:
 
         # Hech qanday provayder ishlamasa
         if last_error:
+            logger.error(f"All AI providers failed. Last error: {last_error}", exc_info=True)
             raise RuntimeError(
-                f"Hech qanday AI provayderi javob bermadi. "
-                f"API kalitlarini tekshiring. Oxirgi xato: {last_error}"
+                "Hech qanday AI provayderi javob bermadi. "
+                "API kalitlarini va internet ulanishini tekshiring."
             )
         raise RuntimeError(
             "API kalitlari topilmadi. Kamida bitta provayder API kalitini o'rnating: "
