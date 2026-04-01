@@ -129,17 +129,27 @@ class EnergyTracker:
                 break
         return low_streak >= 3
 
-    def get_suggestion(self) -> str:
+    def get_suggestion(
+        self, today: Optional[dict] = None, burnout: Optional[bool] = None
+    ) -> str:
         """Bugungi energiyaga qarab taklif.
+
+        Args:
+            today: Bugungi energiya yozuvi (ixtiyoriy).
+            burnout: Burnout xavfi bormi (ixtiyoriy).
 
         Returns:
             Tavsiya matni.
         """
-        today = self.get_today_energy()
+        if today is None:
+            today = self.get_today_energy()
         if today is None:
             return "Energiya darajangizni kiriting (1-5)."
+
         level = today.get("level", 3)
-        burnout = self.detect_burnout_risk()
+        if burnout is None:
+            burnout = self.detect_burnout_risk()
+
         suggestion = _SUGGESTIONS.get(level, "")
         if burnout:
             suggestion += "\n⚠️  Burnout xavfi: bir necha kun dam oling!"
@@ -167,7 +177,7 @@ class EnergyTracker:
         if burnout:
             lines.append("⚠️  Burnout xavfi aniqlandi!")
 
-        suggestion = self.get_suggestion()
+        suggestion = self.get_suggestion(today=today, burnout=burnout)
         if suggestion:
             lines.append("")
             lines.append(f"💡 {suggestion}")
