@@ -10,11 +10,13 @@ build/
 *$py.class
 .env
 data/memory/
+data/chromadb/
 data/schedule/*.json
 data/energy.json
 data/expenses.json
 data/chat_history.log
 runtime/
+models/
 
 # Virtual environment
 venv/
@@ -31,3 +33,8 @@ env/
 # OS
 .DS_Store
 Thumbs.db
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/

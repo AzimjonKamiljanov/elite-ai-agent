@@ -59,15 +59,30 @@ class RAGEngine:
         except Exception:
             self._use_chroma = False
 
-    def ingest_file(self, path: str) -> int:
+    def ingest_file(self, path: str, allowed_base: str | None = None) -> int:
         """Faylni indekslash.
+
+        Args:
+            path: Path to the file to ingest.
+            allowed_base: If provided, the file must be within this directory (path traversal protection).
 
         Returns:
             Qo'shilgan bo'laklar soni
         """
-        file_path = Path(path)
+        # Resolve to absolute path to prevent traversal
+        try:
+            file_path = Path(path).resolve(strict=False)
+        except (ValueError, OSError) as exc:
+            raise ValueError("Invalid file path.") from exc
+
+        # Restrict to allowed base directory when provided (e.g., from API callers)
+        if allowed_base is not None:
+            base = Path(allowed_base).resolve(strict=False)
+            if not str(file_path).startswith(str(base) + os.sep) and file_path != base:
+                raise ValueError("Access to this path is not allowed.")
+
         if not file_path.exists():
-            raise FileNotFoundError(f"Fayl topilmadi: {path}")
+            raise FileNotFoundError(f"Fayl topilmadi: {file_path.name}")
 
         suffix = file_path.suffix.lower()
         if suffix not in _SUPPORTED_EXTENSIONS:
@@ -80,7 +95,7 @@ class RAGEngine:
         try:
             text = file_path.read_text(encoding="utf-8", errors="ignore")
         except OSError as exc:
-            raise OSError(f"Fayl o'qishda xato: {exc}") from exc
+            raise OSError("Fayl o'qishda xato") from exc
 
         chunks = _chunk_text(text)
         self._store_chunks(chunks, source=str(file_path))

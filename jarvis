@@ -1,23 +1,18 @@
 #!/bin/bash
-# JARVIS-X Linux/macOS ishga tushiruvchi
+# JARVIS Prime — Linux/macOS launcher
 set -e
 cd "$(dirname "$0")"
 
-VENV_DIR="runtime/venv"
-
-# Python3 mavjudligini tekshirish
 if ! command -v python3 &> /dev/null; then
-    echo "❌ Xato: python3 topilmadi."
-    echo "   Python 3.10+ o'rnating: https://www.python.org/downloads/"
+    echo "❌ python3 not found. Install Python 3.11+: https://www.python.org/downloads/"
     exit 1
 fi
 
-if [ ! -d "$VENV_DIR" ] || [ ! -f "$VENV_DIR/bin/python" ]; then
-    echo "⚠️  Virtual muhit topilmadi. Avval sozlashni ishga tushiring:"
-    echo "   python3 setup.py"
-    exit 1
+# Try venv first, fall back to system python
+if [ -f ".venv/bin/python" ]; then
+    source .venv/bin/activate
+elif [ -f "runtime/venv/bin/python" ]; then
+    source runtime/venv/bin/activate
 fi
 
-source "$VENV_DIR/bin/activate"
-
-python start.py "$@"
+exec python3 -m apps.cli "$@"

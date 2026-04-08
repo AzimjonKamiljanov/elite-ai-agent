@@ -1,0 +1,86 @@
+# JARVIS Prime — Unified Configuration File
+# Merges elite-ai-agent + Jarvis-x configuration
+
+ai:
+  default_provider: groq          # groq | openrouter | ollama
+  temperature: 0.7
+  max_tokens: 2048
+  model_preferences:
+    trivial: llama-3.1-8b-instant
+    simple: llama-3.1-8b-instant
+    moderate: llama-3.3-70b-versatile
+    complex: llama-3.3-70b-versatile
+
+memory:
+  short_term_limit: 20
+  long_term_enabled: true
+  vector_db_path: "./data/chromadb"
+
+system:
+  language: uz      # uz | en
+  debug: false
+  persona: jarvis   # jarvis = "You are JARVIS; user is Stark"
+
+providers:
+  groq:
+    enabled: true
+    api_endpoint: https://api.groq.com/openai/v1
+    models:
+      - name: llama-3.3-70b-versatile
+        latency_ms: 800
+        quality_score: 0.95
+        offline_capable: false
+      - name: llama-3.1-8b-instant
+        latency_ms: 300
+        quality_score: 0.80
+        offline_capable: false
+      - name: mixtral-8x7b-32768
+        latency_ms: 600
+        quality_score: 0.88
+        offline_capable: false
+  openrouter:
+    enabled: true
+    api_endpoint: https://openrouter.ai/api/v1
+    models:
+      - name: google/gemini-2.0-flash-exp:free
+        latency_ms: 400
+        quality_score: 0.85
+        offline_capable: false
+      - name: meta-llama/llama-3.3-70b-instruct:free
+        latency_ms: 500
+        quality_score: 0.90
+        offline_capable: false
+      - name: deepseek/deepseek-r1:free
+        latency_ms: 2000
+        quality_score: 0.93
+        offline_capable: false
+      - name: anthropic/claude-sonnet-4
+        latency_ms: 700
+        quality_score: 0.96
+        offline_capable: false
+  ollama:
+    enabled: true
+    base_url: "http://localhost:11434"
+    models:
+      - name: phi3:mini
+        latency_ms: 3000
+        quality_score: 0.65
+        offline_capable: true
+      - name: mistral:7b
+        latency_ms: 5000
+        quality_score: 0.75
+        offline_capable: true
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+
+voice:
+  stt_engine: "vosk"
+  stt_model_path: "./models/vosk-model-small-en-us"
+  tts_engine: "pyttsx3"
+  tts_rate: 175
+  sample_rate: 16000
+  silence_threshold: 0.01
+  silence_duration: 1.5
+  max_record_duration: 30
