@@ -1,11 +1,11 @@
 from .ai_router import AIRouter
 from .education import SmartEducation
-from .modes import ModeManager
+from .jarvis import Jarvis
 from .language import LanguageDetector
 from .memory import MemoryManager
-from .tools import ToolRegistry
+from .modes import ModeManager
 from .rag import RAGEngine
-from .jarvis import Jarvis
+from .tools import ToolRegistry
 
 try:
     from .auto_mode import AutoModeSwitcher
@@ -53,27 +53,27 @@ except Exception:
     VoiceEngine = None  # type: ignore[assignment,misc]
 
 try:
-    from .telegram_bot import TelegramBot
+    from .telegram_bot import TelegramNotifier
 except Exception:
-    TelegramBot = None  # type: ignore[assignment,misc]
+    TelegramNotifier = None  # type: ignore[assignment,misc]
 
 __all__ = [
     "AIRouter",
-    "SmartEducation",
-    "ModeManager",
-    "LanguageDetector",
-    "MemoryManager",
-    "ToolRegistry",
-    "RAGEngine",
-    "Jarvis",
     "AutoModeSwitcher",
     "CalendarSystem",
     "ClassAutomation",
     "EnergyTracker",
     "ExpenseTracker",
     "IntentParser",
+    "Jarvis",
+    "LanguageDetector",
+    "MemoryManager",
+    "ModeManager",
+    "RAGEngine",
+    "SmartEducation",
     "SmartFeatures",
+    "TelegramNotifier",
+    "ToolRegistry",
     "UIRenderer",
     "VoiceEngine",
-    "TelegramBot",
 ]

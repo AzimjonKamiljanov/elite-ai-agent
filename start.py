@@ -8,7 +8,7 @@ import argparse
 import os
 import signal
 import sys
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 try:
@@ -117,7 +117,7 @@ def _check_venv() -> None:
 def _setup_signal_handlers() -> None:
     """Graceful shutdown uchun signal handlerlarni o'rnatish."""
 
-    def _handle_signal(signum: int, frame: object) -> None:  # noqa: ARG001
+    def _handle_signal(signum: int, frame: object) -> None:
         print("\nSignal qabul qilindi. JARVIS to'xtatilmoqda...")
         sys.exit(0)
 

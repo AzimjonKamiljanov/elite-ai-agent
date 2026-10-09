@@ -17,14 +17,14 @@ ROOT = Path(__file__).parent.resolve()
 # Rich mavjudligini tekshirish
 # ---------------------------------------------------------------------------
 try:
+    from rich import box
     from rich.console import Console
     from rich.table import Table
-    from rich import box
     _RICH = True
 except ImportError:
     _RICH = False
 
-console: "Console | None" = Console() if _RICH else None
+console: Console | None = Console() if _RICH else None
 
 
 def _print(msg: str) -> None:
@@ -141,7 +141,7 @@ def check_data_dirs() -> list[tuple[str, bool, str]]:
 
 def check_chromadb() -> tuple[bool, str]:
     try:
-        import chromadb  # noqa: F401
+        import chromadb
         client = chromadb.Client()
         client.heartbeat()
         return True, "ChromaDB ulandi"
@@ -183,7 +183,7 @@ def check_providers() -> list[tuple[str, bool, str]]:
 # Natijalarni chiqarish
 # ---------------------------------------------------------------------------
 
-def _make_table(title: str) -> "Table":
+def _make_table(title: str) -> Table:
     t = Table(title=title, box=box.ROUNDED, show_header=True, header_style="bold cyan")
     t.add_column("Tekshiruv", style="bold")
     t.add_column("Holat", justify="center")

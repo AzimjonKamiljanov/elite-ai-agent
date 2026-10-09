@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import re
 
-
 # Uzbek-specific characters (NOT 'o' which is too common in English)
 _UZ_CHARS = set("ʻʼ")  # Special apostrophe characters unique to Uzbek Latin
 _UZ_UNIQUE_CHARS = set("qg")  # 'q' and 'g' are distinctive but not exclusive
@@ -15,7 +14,7 @@ _UZ_WORDS = {
     "va", "bu", "men", "sen", "u", "biz", "siz", "ular",
     "nima", "qanday", "qachon", "qayer", "nega", "kim",
     "ha", "yoʻq", "yo'q", "iltimos", "rahmat", "kerak",
-    "bor", "yo'q", "qil", "qiling", "ber", "ko'r",
+    "bor", "qil", "qiling", "ber", "ko'r",
     "menga", "senga", "unga", "bizga", "sizga", "ularga",
     "kelajak", "bugun", "ertaga", "kecha", "hozir",
     "salom", "xayr", "yaxshi", "yomon", "katta", "kichik",

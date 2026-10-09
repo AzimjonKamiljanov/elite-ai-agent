@@ -9,13 +9,20 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 # Logging sozlash
 logger = logging.getLogger(__name__)
 
 try:
+    import tenacity
     from openai import OpenAI  # type: ignore
+    from tenacity import (
+        retry,
+        retry_if_exception_type,
+        stop_after_attempt,
+        wait_exponential,
+    )
 
     _OPENAI_AVAILABLE = True
 except ImportError:
@@ -116,7 +123,7 @@ class AIRouter:
 
     def __init__(self) -> None:
         self._config = _load_config()
-        self._api_keys: dict[str, Optional[str]] = {}
+        self._api_keys: dict[str, str | None] = {}
         self._load_api_keys()
 
     def _load_api_keys(self) -> None:
@@ -131,7 +138,7 @@ class AIRouter:
         except ImportError:
             pass
 
-        def get_val(key: str) -> Optional[str]:
+        def get_val(key: str) -> str | None:
             val = env_vals.get(key) or os.getenv(key)
             if val and not val.startswith("your_"):
                 return val
@@ -144,8 +151,8 @@ class AIRouter:
             "groq": get_val("GROQ_API_KEY"),
             "huggingface": get_val("HUGGINGFACE_API_KEY"),
         }
-        self._forced_provider: Optional[str] = None
-        self._forced_model: Optional[str] = None
+        self._forced_provider: str | None = None
+        self._forced_model: str | None = None
 
     def set_provider(self, name: str) -> None:
         """Foydalanuvchi tomonidan provayderni tanlash.
@@ -168,11 +175,11 @@ class AIRouter:
         self._forced_provider = None
         self._forced_model = None
 
-    def get_current_provider(self) -> Optional[str]:
+    def get_current_provider(self) -> str | None:
         """Hozirgi tanlangan providerni qaytarish (None = avtomatik)."""
         return self._forced_provider
 
-    def get_current_model(self) -> Optional[str]:
+    def get_current_model(self) -> str | None:
         """Hozirgi tanlangan modelni qaytarish (None = avtomatik)."""
         return self._forced_model
 
@@ -226,7 +233,7 @@ class AIRouter:
 
         return OpenAI(api_key=api_key, base_url=base_url)
 
-    def _select_model(self, provider: str, mode: str, model_override: Optional[str] = None) -> str:
+    def _select_model(self, provider: str, mode: str, model_override: str | None = None) -> str:
         """Rejim va provayderga qarab modelni tanlash."""
         if model_override:
             return model_override
@@ -239,15 +246,13 @@ class AIRouter:
         self,
         messages: list[dict],
         mode: str = "pro",
-        model: Optional[str] = None,
+        model: str | None = None,
         temperature: float = 0.7,
         max_tokens: int = 2048,
-    ) -> str:
+        stream: bool = False,
+        response_format: dict | None = None,
+    ) -> Any:
         """So'rovni mos provayderga yo'naltirish.
-
-        Agar _forced_provider o'rnatilgan bo'lsa — faqat shu providerni ishlatish
-        (fallback QILMASLIK). Agar _forced_model o'rnatilgan bo'lsa — shu modelni
-        ishlatish. Aks holda — fallback_order bilan ishlash.
 
         Args:
             messages: OpenAI-format xabarlar ro'yxati
@@ -255,10 +260,40 @@ class AIRouter:
             model: Model override (ixtiyoriy)
             temperature: Temperatura parametri
             max_tokens: Maksimal tokenlar soni
+            stream: True bo'lsa javobni stream ko'rinishida qaytaradi
+            response_format: Structured output uchun (masalan: {"type": "json_object"})
 
         Returns:
-            AI javobi matni
+            AI javobi matni yoki stream generatori
         """
+
+        # Define a retryable completion function
+        @tenacity.retry(
+            stop=tenacity.stop_after_attempt(3),
+            wait=tenacity.wait_exponential(multiplier=1, min=2, max=10),
+            retry=tenacity.retry_if_exception_type((RuntimeError, Exception)),
+            reraise=True,
+        )
+        def _create_completion_with_retry(client: Any, selected_model: str, is_forced: bool = False) -> Any:
+            kwargs: dict[str, Any] = {
+                "model": selected_model,
+                "messages": messages,
+                "temperature": temperature,
+                "max_tokens": max_tokens,
+                "stream": stream,
+            }
+            if response_format:
+                kwargs["response_format"] = response_format
+
+            try:
+                response = client.chat.completions.create(**kwargs)
+                if stream:
+                    return response
+                return response.choices[0].message.content or ""
+            except Exception as e:
+                logger.warning(f"Error calling LLM (model={selected_model}, forced={is_forced}): {e}")
+                raise RuntimeError(f"LLM call failed: {e}") from e
+
         effective_model = model or self._forced_model
 
         # Majburiy provayder tanlangan bo'lsa — faqat shuni ishlatish
@@ -277,27 +312,21 @@ class AIRouter:
                     f"'{provider}' provayderida '{mode}' rejimi uchun model topilmadi."
                 )
             try:
-                response = client.chat.completions.create(
-                    model=selected_model,
-                    messages=messages,
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                )
-                return response.choices[0].message.content or ""
-            except Exception:
+                return _create_completion_with_retry(client, selected_model, is_forced=True)
+            except Exception as e:
                 logger.exception(
                     f"Error in forced provider '{provider}' with model '{selected_model}'"
                 )
                 raise RuntimeError(
                     f"'{provider}' provayderida xatolik yuz berdi. "
-                    f"Iltimos, API kalitini yoki provayder holatini tekshiring."
-                ) from None
+                    f"Iltimos, API kalitini yoki provayder holatini tekshiring. Xato: {e}"
+                ) from e
 
         # Avtomatik rejim — fallback_order bo'yicha
         fallback_order: list[str] = self._config.get(
             "fallback_order", ["gemini", "deepseek", "openrouter", "groq", "huggingface"]
         )
-        last_error: Optional[Exception] = None
+        last_error: Exception | None = None
 
         for provider in fallback_order:
             api_key = self._api_keys.get(provider)
@@ -311,12 +340,21 @@ class AIRouter:
                 if not selected_model:
                     continue
 
-                response = client.chat.completions.create(
-                    model=selected_model,
-                    messages=messages,
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                )
+                # Turn off retries for fallback mode (to fail fast and try next provider)
+                # Just call directly
+                kwargs: dict[str, Any] = {
+                    "model": selected_model,
+                    "messages": messages,
+                    "temperature": temperature,
+                    "max_tokens": max_tokens,
+                    "stream": stream,
+                }
+                if response_format:
+                    kwargs["response_format"] = response_format
+
+                response = client.chat.completions.create(**kwargs)
+                if stream:
+                    return response
                 return response.choices[0].message.content or ""
 
             except Exception as exc:
@@ -327,8 +365,8 @@ class AIRouter:
         if last_error:
             logger.error(f"All AI providers failed. Last error: {last_error}", exc_info=True)
             raise RuntimeError(
-                "Hech qanday AI provayderi javob bermadi. "
-                "API kalitlarini va internet ulanishini tekshiring."
+                f"Hech qanday AI provayderi javob bermadi. "
+                f"API kalitlarini va internet ulanishini tekshiring. Last error: {last_error}"
             )
         raise RuntimeError(
             "API kalitlari topilmadi. Kamida bitta provayder API kalitini o'rnating: "

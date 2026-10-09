@@ -48,7 +48,7 @@ class TerminalTool:
         command_lower = command.lower()
         for blocked in _BLOCKED_PATTERNS:
             if blocked in command_lower:
-                return f"🚫 Xavfsizlik cheklovi: bu buyruqqa ruxsat yo'q."
+                return "🚫 Xavfsizlik cheklovi: bu buyruqqa ruxsat yo'q."
 
         # Birinchi so'zni olish va whitelist tekshirish
         try:

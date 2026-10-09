@@ -5,7 +5,7 @@ ChromaDB bo'lmasa, in-memory fallback ishlatiladi.
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 
 class MemoryManager:
@@ -62,7 +62,7 @@ class MemoryManager:
 
     # === Uzoq muddatli xotira ===
 
-    def add_to_long_term(self, content: str, metadata: Optional[dict] = None) -> None:
+    def add_to_long_term(self, content: str, metadata: dict | None = None) -> None:
         """Uzoq muddatli xotiraga ma'lumot qo'shish."""
         if not content.strip():
             return

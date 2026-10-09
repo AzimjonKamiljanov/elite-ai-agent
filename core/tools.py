@@ -4,7 +4,8 @@ Tool Registry — Vositalar reestri va bajaruv tizimi.
 
 from __future__ import annotations
 
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 
 class ToolRegistry:
@@ -18,7 +19,7 @@ class ToolRegistry:
         name: str,
         func: Callable,
         description: str = "",
-        parameters: Optional[dict] = None,
+        parameters: dict | None = None,
     ) -> None:
         """Vositani ro'yxatga olish.
 

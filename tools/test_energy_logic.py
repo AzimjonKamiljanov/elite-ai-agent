@@ -1,12 +1,12 @@
-import sys
 import os
-from datetime import datetime, timezone, timedelta
-from pathlib import Path
+import sys
+from datetime import datetime, timedelta, timezone
 
 sys.path.append(os.getcwd())
 
 import core.energy_tracker
 from core.energy_tracker import EnergyTracker
+
 
 def test_logic():
     # Mocking _TASHKENT_TZ and current time for deterministic tests

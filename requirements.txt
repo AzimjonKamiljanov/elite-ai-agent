@@ -10,3 +10,5 @@ groq>=0.4.0
 huggingface-hub>=0.20.0
 colorama>=0.4.6
 platformdirs>=4.0.0
+tenacity>=9.0.0
+pymupdf

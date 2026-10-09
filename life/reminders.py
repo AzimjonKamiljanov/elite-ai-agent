@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 
-from life.scheduler import SmartScheduler
-from life.homework import HomeworkManager
 from life.daily_planner import DailyPlanner
+from life.homework import HomeworkManager
+from life.scheduler import SmartScheduler
 
 
 class ReminderEngine:

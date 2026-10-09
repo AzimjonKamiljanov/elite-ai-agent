@@ -4,8 +4,6 @@ Web qidiruv vositasi — DuckDuckGo orqali bepul internet qidiruvchi.
 
 from __future__ import annotations
 
-from typing import Optional
-
 
 class WebSearchTool:
     """DuckDuckGo yordamida web qidiruvchi."""

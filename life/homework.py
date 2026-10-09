@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from typing import Optional
 
 from life.models import Homework, Task, TaskPriority, TaskStatus
 from life.storage import LifeStorage
@@ -168,14 +167,14 @@ class HomeworkManager:
         combined.sort(key=lambda x: x["priority_score"], reverse=True)
         return combined
 
-    def find_homework_by_prefix(self, id_prefix: str) -> Optional[Homework]:
+    def find_homework_by_prefix(self, id_prefix: str) -> Homework | None:
         """ID prefiksi bo'yicha uy vazifasini topish."""
         for hw in self._homework:
             if hw.id.startswith(id_prefix):
                 return hw
         return None
 
-    def find_task_by_prefix(self, id_prefix: str) -> Optional[Task]:
+    def find_task_by_prefix(self, id_prefix: str) -> Task | None:
         """ID prefiksi bo'yicha vazifani topish."""
         for task in self._tasks:
             if task.id.startswith(id_prefix):

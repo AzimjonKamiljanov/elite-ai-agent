@@ -6,20 +6,24 @@ Real vaqtda dars monitoring, homework tracking, kundalik rejalashtirish.
 import json
 import os
 import sys
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 try:
     from rich.console import Console
+    from rich.markdown import Markdown
     from rich.panel import Panel
     from rich.table import Table
-    from rich.markdown import Markdown
 except ImportError:
     print("Rich kutubxonasi topilmadi. O'rnating: pip install rich")
     sys.exit(1)
 
-from life import SmartScheduler, HomeworkManager, DailyPlanner, ReminderEngine
-from core.intelligence import CognitiveLoadBalancer, TimePerceptionEngine, LifeNarrativeEngine
+from core.intelligence import (
+    CognitiveLoadBalancer,
+    LifeNarrativeEngine,
+    TimePerceptionEngine,
+)
+from life import DailyPlanner, HomeworkManager, ReminderEngine, SmartScheduler
 
 console = Console()
 

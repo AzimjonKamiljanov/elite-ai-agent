@@ -1,223 +1,174 @@
-# JARVIS-X — Avtonom AI Agent
+<div align="center">
 
-JARVIS-X — Smart Life Assistant, Multi-AI Orchestration, Memory tizimi, RAG va ko'plab vositalar bilan jihozlangan to'liq avtonom AI Agent.
+# JARVIS-X — Enterprise-Grade Autonomous AI Agent
 
-## JARVIS Roli
+**The Ultimate Smart Life Assistant, Orchestrator, & Strategic Thinking Partner**
 
-JARVIS — professional AI life assistant sifatida ikkinchi miya, strategik fikrlash hamkori va mahsuldorlik optimizatori bo'lib xizmat qiladi. U foydalanuvchiga samaraliroq fikrlash, o'rganish, rejalashtirish va harakat qilishda yordam beradi.
+[![CI Pipeline](https://github.com/AzimjonKamiljanov/elite-ai-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/AzimjonKamiljanov/elite-ai-agent/actions)
+[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/release/python-3120/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Asosiy tamoyillar:**
-- Aqliy harakatni doimo kamaytirish
-- Tuzilgan chiqishlarni taqdim etish
-- Amaliy qadamlarni taklif qilish
-- Foydalanuvchi xatti-harakatlariga moslashish
-- Hech qachon murakkablashtirmaslik
-- Hech qachon bildirishnomalar bilan haddan tashqari ko'p bezovta qilmaslik
-- Hech qachon umumiy maslahat bermaslik
+*A fully autonomous AI Agent featuring multi-LLM orchestration, short and long-term memory via ChromaDB, RAG capabilities, intelligent tool calling, and structured cognitive load tracking.*
 
-## Xususiyatlar
+[Features](#features) • [Architecture](#architecture) • [Quickstart](#quickstart) • [Usage](#usage) • [Tool Extension](#tool-extension)
 
-- 🤖 **Multi-AI Orchestration** — OpenRouter, Groq provayderlarini qo'llab-quvvatlaydi
-- 🧠 **Memory System** — Qisqa va uzoq muddatli xotira (ChromaDB)
-- 📚 **RAG** — Lokal hujjatlardan bilim olish
-- 🔧 **Tools** — Web qidiruv, fayl boshqaruvi, kod bajarish, terminal
-- 🎓 **Life Assistant** — Dars jadvali, uy vazifalari, kundalik reja
-- 🌐 **Ko'p tilli** — O'zbek, Ingliz, Rus tillarini avtomatik aniqlaydi
-- 🎙 **Voice** (ixtiyoriy) — Whisper STT + piper TTS
-- 🧬 **Intelligence Modules** — Kognitiv yuk, fokus, prokrastinatsiya, o'qitish
+</div>
 
-## Tezkor ishga tushirish
+---
+
+## 🎯 What is JARVIS?
+
+JARVIS serves as a professional AI life assistant designed to act as a second brain, strategic thinking partner, and productivity optimizer.
+
+**Core Philosophies:**
+- **Zero Friction:** Always reduce mental effort for the user.
+- **Actionable Output:** Focus on structured outputs and tangible steps over generic advice.
+- **Resilience:** Multi-provider fallback engine guarantees an AI response even during API outages.
+- **Adaptive:** Scales from simple chat to complex multi-step reasoning, coding, and scheduling tasks.
+
+---
+
+## ✨ Enterprise Features
+
+- 🤖 **Multi-AI Orchestration Engine**
+  - Built-in unified provider abstractions: Gemini, DeepSeek, OpenRouter, Groq, HuggingFace.
+  - Automatic fallback cascading, exponential backoff retries, and circuit breakers (powered by `tenacity`).
+- 🧠 **Dual Memory System & RAG**
+  - Short-term conversational context coupled with long-term vector-based retrieval (ChromaDB).
+  - Easily ingest local directories for RAG capability.
+- 🧬 **Cognitive Intelligence Modules**
+  - **CognitiveLoadBalancer:** Calculates workload based on tasks, deadlines, and break patterns.
+  - **TimePerceptionEngine:** Orchestrates Pomodoro cycles and tracks deep work sessions.
+  - **AntiProcrastinationEngine:** Micro-step strategies for fighting task paralysis.
+- 🔧 **Extensible Tool Registry**
+  - Seamlessly hook custom Python tools to the agent.
+  - Built-in tools: Web Search (DuckDuckGo), File Management, Code Execution, and Terminal access.
+- 🐳 **Production Ready**
+  - CI/CD verified via GitHub Actions (`pytest`, `coverage`).
+  - Containerized deployment ready via `Docker` and `docker-compose`.
+
+---
+
+## 🏗 Architecture Overview
+
+The multi-provider architecture leverages fallback chains and intelligent routing depending on the required "Mode" (`/fast`, `/code`, `/pro`, `/study`).
+
+```mermaid
+graph TD
+    User([User Input]) --> Jarvis[JARVIS Core]
+    Jarvis --> Intent[Intent Parser]
+    Intent --> Router[AI Router]
+
+    subgraph Multi-Provider Engine
+        Router --> |Try 1| Gemini[Gemini API]
+        Router -.-> |Fallback 1| DeepSeek[DeepSeek API]
+        Router -.-> |Fallback 2| Groq[Groq API]
+        Router -.-> |Fallback 3| OpenRouter[OpenRouter]
+    end
+
+    Jarvis --> Memory[(ChromaDB Memory)]
+    Jarvis --> RAG[(Local RAG Docs)]
+    Jarvis --> Tools[Tool Registry]
+
+    Tools --> FileManager
+    Tools --> CodeExecutor
+    Tools --> WebSearch
+```
+
+---
+
+## 🚀 Quickstart
+
+### Option 1: Native Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/AzimjonKamiljanov/elite-ai-agent.git
+   cd elite-ai-agent
+   ```
+
+2. **Run Auto-Setup:**
+   This handles venv creation, package installation, and `.env` generation.
+   ```bash
+   python setup.py
+   ```
+
+3. **Configure API Keys:**
+   Open the newly generated `.env` file and input your keys (at least one is required).
+
+4. **Launch JARVIS:**
+   ```bash
+   # Linux/macOS
+   ./jarvis
+
+   # Windows
+   jarvis.bat
+   ```
+
+### Option 2: Docker Deployment
+
+Ideal for instant containerized deployment without host-system dependencies.
 
 ```bash
-# 1. Reponi klonlash
-git clone https://github.com/AzimjonKamiljanov/elite-ai-agent.git
-cd elite-ai-agent
+# Ensure your .env file is populated, then run:
+docker-compose up -d --build
 
-# 2. Avtomatik setup (barcha OS uchun)
-python setup.py
-# yoki
-python3 setup.py
-
-# 3. API kalitlarini sozlash
-# .env faylini tahrirlang va API kalitlarini kiriting
-
-# 4. JARVIS-X ni ishga tushirish
-
-# Windows:
-jarvis.bat
-
-# Linux/macOS:
-./jarvis
-
-# Yoki to'g'ridan-to'g'ri:
-python start.py
-
-# Faqat Life Assistant rejimida:
-python start.py --life-only
-
-# 5. Diagnostika
-python health_check.py
+# View logs
+docker-compose logs -f
 ```
 
-## Rejimlar
+---
 
-| Rejim | Buyruq | Tavsif |
-|-------|--------|--------|
-| PRO | `/pro` | Batafsil, tadqiqot darajasidagi javoblar |
-| CODE | `/code` | Kod yozishga ixtisoslashgan |
-| FAST | `/fast` | Tez, qisqa javoblar |
-| STUDY | `/study` | O'qitish yordamchisi — Feynman texnikasi |
-| FOCUS | `/focus` | Ultra-qisqa javoblar, faqat joriy vazifa |
-| PLANNER | `/planner` | Kundalik reja va vaqtni boshqarish |
+## 🧠 Intelligence Modes
 
-## Intelligence Modullari
+JARVIS dynamically routes prompts based on your requested context.
 
-### CognitiveLoadBalancer
-Aqliy ish yukini kuzatadi: vazifalar soni, muddat bosimi va dam olish naqshlari asosida yuk darajasini hisoblaydi: `low`, `moderate`, `high`, `critical`.
+| Mode | Command | Description |
+|------|---------|-------------|
+| **PRO** | `/pro` | Default. Detailed, research-grade, highly reasoned responses. |
+| **CODE** | `/code` | Coding, refactoring, and terminal commands. |
+| **FAST** | `/fast` | Quick, concise outputs (uses smaller, highly responsive models). |
+| **STUDY** | `/study` | Tutoring mode based on Feynman techniques and quiz generation. |
+| **FOCUS** | `/focus` | Ultra-concise, distraction-free Pomodoro session tracking. |
+| **PLANNER**| `/planner`| Daily life planning, task breakdown, and cognitive load assessment. |
 
-### TimePerceptionEngine
-Pomodoro tsikllari (25 daq ish / 5 daq tanaffus) va chuqur ish bloklari yordamida vaqtni tuziladi. Joriy fokus sessiyasini kuzatadi.
+---
 
-### AntiProcrastinationEngine
-Takroriy kechiktirishlarni aniqlaydi. 5 daqiqalik boshlash texnikasini va micro-qadam strategiyasini taklif qiladi.
+## 🛠 Tool Extension Guide
 
-### LifeNarrativeEngine
-Haftalik aks ettirish: yutuqlar, qiyinchiliklar, o'sish ko'rsatkichlari va maslahatlar.
+Adding new capabilities to JARVIS is straightforward thanks to the modular `ToolRegistry`.
 
-### AITutorMode
-Mavzularni tushuntirish, xulosa yaratish, viktorina generatsiyasi, uy vazifasiga yordam va o'qish rejasi.
+1. **Create your tool logic** in `tools/my_tool.py`:
+   ```python
+   class WeatherTool:
+       def get_weather(self, location: str) -> str:
+           return f"The weather in {location} is 72°F and sunny."
+   ```
 
-### PersonalityAdapter
-Foydalanuvchi afzalliklariga moslashadi: `concise`/`detailed`, `motivational`/`neutral`, `technical`/`simple`.
+2. **Register the tool** in `core/jarvis.py` under `_register_builtin_tools()`:
+   ```python
+   from tools.my_tool import WeatherTool
 
-## Arxitektura
+   weather = WeatherTool()
+   self.tools.register("get_weather", weather.get_weather, "Check weather for a location")
+   ```
 
-```
-elite-ai-agent/
-├── jarvis_life.py         # Life Assistant CLI
-├── start.py               # Asosiy ishga tushirish nuqtasi
-├── jarvis                 # Linux/macOS launcher
-├── jarvis.bat             # Windows launcher
-│
-├── core/                  # AI Agent modullari
-│   ├── jarvis.py          # Asosiy Orchestrator
-│   ├── ai_router.py       # Multi-AI yo'naltiruvchi
-│   ├── modes.py           # Rejim tizimi (FAST/CODE/PRO/STUDY/FOCUS/PLANNER)
-│   ├── intelligence.py    # Intelligence modullari (yangi)
-│   ├── education.py       # O'qish va focus tracking
-│   ├── language.py        # Til aniqlovchi
-│   ├── memory.py          # Xotira tizimi
-│   ├── tools.py           # Vositalar reestri
-│   ├── rag.py             # RAG tizimi
-│   └── voice.py           # Ovoz tizimi
-│
-├── life/                  # Life Assistant modullari
-│   ├── models.py          # Pydantic data modellari
-│   ├── storage.py         # JSON saqlash
-│   ├── scheduler.py       # Dars jadvali
-│   ├── homework.py        # Uy vazifalari
-│   ├── daily_planner.py   # Kundalik reja
-│   └── reminders.py       # Eslatmalar
-│
-├── tools/                 # Tashqi vositalar
-│   ├── web_search.py      # DuckDuckGo qidiruv
-│   ├── file_manager.py    # Fayl operatsiyalari
-│   ├── code_executor.py   # Kod bajarish
-│   └── terminal.py        # Terminal buyruqlari
-│
-├── config/                # Sozlamalar
-│   ├── models.json        # AI model konfiguratsiyasi
-│   ├── settings.json      # Umumiy sozlamalar
-│   └── schedule_config.json  # Jadval sozlamalari
-│
-└── data/                  # Ma'lumotlar
-    ├── memory/            # ChromaDB saqlash
-    ├── documents/         # RAG hujjatlar
-    └── schedule/          # Jadval JSON fayllari
+3. **JARVIS now natively understands** it can fetch weather context during conversations!
+
+---
+
+## 📊 Performance & Testing
+
+JARVIS is engineered for reliability.
+- **Code Coverage**: Core orchestration logic (`core/ai_router.py`) is covered by mocked LLM integration tests (`pytest`).
+- **Resilience**: The `tenacity` powered router handles rate-limits, connection drops, and API downtimes transparently.
+
+Run the test suite manually:
+```bash
+python -m pytest tests/ --cov=core -v
 ```
 
-## Buyruqlar
-
-### AI Agent (start.py)
-| Buyruq | Tavsif |
-|--------|--------|
-| `/fast` | FAST rejimiga o'tish |
-| `/code` | CODE rejimiga o'tish |
-| `/pro` | PRO rejimiga o'tish |
-| `/study <mavzu>` | STUDY rejimiga o'tish va mavzu haqida so'rash |
-| `/focus [daqiqa]` | Focus/Pomodoro sessiyasini boshlash (default: 25 min) |
-| `/focus stop` | Focus sessiyasini to'xtatish |
-| `/planner` | PLANNER rejimiga o'tish |
-| `/modes` | Barcha mavjud rejimlar ro'yxati |
-| `/providers` | AI provayderlar holati |
-| `/models` | Konfiguratsiya qilingan AI modellari |
-| `/today` | Bugungi to'liq sharh |
-| `/status` | To'liq tizim holati |
-| `/cognitive` | Kognitiv yuk tahlili |
-| `/reflect` | Haftalik aks ettirish |
-| `/help` | Yordam matnini ko'rsatish |
-| `/exit` | Chiqish |
-
-### Life Assistant (jarvis_life.py)
-#### Jadval
-| Buyruq | Tavsif |
-|--------|--------|
-| `/schedule` | Bugungi dars jadvali |
-| `/week` | Haftalik dars jadvali |
-| `/add_class <fan> <kun> <boshlanish> <tugash> [xona]` | Yangi dars qo'shish |
-| `/remove_class <id>` | Darsni o'chirish |
-| `/load_sample` | Namuna jadval yuklash |
-
-#### Uy Vazifalari
-| Buyruq | Tavsif |
-|--------|--------|
-| `/homework` | Bajarilmagan uy vazifalari |
-| `/add_hw <fan> <tavsif> [muddat] [ustuvorlik]` | Yangi uy vazifasi qo'shish |
-| `/done_hw <id>` | Uy vazifasini bajarilgan deb belgilash |
-
-#### Vazifalar
-| Buyruq | Tavsif |
-|--------|--------|
-| `/tasks` | Barcha bajarilmagan vazifalar |
-| `/add_task <sarlavha> [tavsif] [muddat]` | Yangi vazifa qo'shish |
-| `/done_task <id>` | Vazifani bajarilgan deb belgilash |
-
-#### Reja va Eslatmalar
-| Buyruq | Tavsif |
-|--------|--------|
-| `/plan` | Bugungi optimal reja |
-| `/reminders` | Barcha eslatmalar |
-| `/stats` | Statistika |
-| `/summary` | Kun oxiri xulosasi |
-
-#### Intelligence
-| Buyruq | Tavsif |
-|--------|--------|
-| `/today` | Bugungi to'liq sharh (dars, vazifalar, kognitiv yuk) |
-| `/focus [daqiqa]` | Focus/Pomodoro sessiyasini boshlash |
-| `/focus stop` | Focus sessiyasini to'xtatish |
-| `/cognitive` | Kognitiv yuk tahlili |
-| `/reflect` | Haftalik aks ettirish |
-
-## Sozlash
-
-### .env fayli
-```env
-# AI Providers
-OPENROUTER_API_KEY=your_key_here
-GROQ_API_KEY=your_key_here
-
-# Life Assistant
-JARVIS_WAKE_UP_TIME=07:00
-JARVIS_CLASS_ALERT_MINUTES=15
-
-# Memory
-CHROMA_PERSIST_DIR=./data/memory
-```
-
-## Ma'lumotlar Modellari
-
-- **ClassSchedule** — Dars jadvali (fan, kun, vaqt, xona, o'qituvchi)
-- **Homework** — Uy vazifasi (fan, tavsif, muddat, ustuvorlik)
-- **Task** — Umumiy vazifa (sarlavha, kategoriya, muddat)
-- **DailyPlan** — Kundalik reja (darslar, o'qish bloklari, dam olish)
+---
+<div align="center">
+  <i>Built with precision. Designed for scale.</i>
+</div>

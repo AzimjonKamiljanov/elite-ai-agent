@@ -1,8 +1,8 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
+from life.homework import HomeworkManager
 from life.models import DailyPlan
 from life.scheduler import SmartScheduler
-from life.homework import HomeworkManager
 from life.storage import LifeStorage
 
 _END_OF_DAY_TIME = "22:00"  # Kun oxiri vaqti (dam olish hisobi uchun)

@@ -4,12 +4,10 @@ Xavfsiz kod bajarish vositasi — subprocess va timeout himoyasi bilan.
 
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 import tempfile
-import os
-from pathlib import Path
-
 
 _DEFAULT_TIMEOUT = 10  # sekund
 _MAX_OUTPUT_SIZE = 10_000  # belgi

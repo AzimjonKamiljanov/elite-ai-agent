@@ -8,7 +8,6 @@ import json
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 _CALENDAR_FILE = Path("data/calendar.json")
 _DEFAULT_EVENT_DURATION = 100  # Default duration in HHMM units (1 hour)
@@ -52,7 +51,7 @@ class CalendarEvent:
         }
 
     @classmethod
-    def from_dict(cls, data: dict) -> "CalendarEvent":
+    def from_dict(cls, data: dict) -> CalendarEvent:
         return cls(
             title=data["title"],
             day=data["day"],
