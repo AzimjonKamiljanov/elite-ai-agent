@@ -11,7 +11,6 @@ Talablar: Python 3.10+
 from __future__ import annotations
 
 import argparse
-import os
 import platform
 import shutil
 import subprocess
@@ -23,7 +22,8 @@ _MIN_PYTHON = (3, 10)
 
 # Ranglar (colorama mavjud bo'lmasa oddiy matn)
 try:
-    from colorama import Fore, Style, init as colorama_init
+    from colorama import Fore, Style
+    from colorama import init as colorama_init
 
     colorama_init(autoreset=True)
     _GREEN = Fore.GREEN
@@ -87,7 +87,7 @@ def check_python_version() -> bool:
     _err(
         f"Python {ver.major}.{ver.minor} topildi, lekin {_MIN_PYTHON[0]}.{_MIN_PYTHON[1]}+ talab qilinadi."
     )
-    _info(f"Python-ni yangilang: https://www.python.org/downloads/")
+    _info("Python-ni yangilang: https://www.python.org/downloads/")
     return False
 
 
@@ -254,7 +254,7 @@ def setup_launchers() -> None:
         jarvis_sh = ROOT / "jarvis"
         if jarvis_sh.exists():
             jarvis_sh.chmod(jarvis_sh.stat().st_mode | 0o111)
-            _ok(f"Execute ruxsat berildi: jarvis")
+            _ok("Execute ruxsat berildi: jarvis")
         else:
             _warn("jarvis skripti topilmadi.")
     elif current_os == "Windows":
@@ -304,14 +304,14 @@ def print_final_guide() -> None:
     _print("Keyingi qadamlar:", _CYAN, bold=True)
     print(f"  1. {_YELLOW}.env{_RESET} faylida API kalitlarini sozlang")
     print(f"     {_CYAN}{ENV_FILE}{_RESET}\n")
-    print(f"  2. JARVIS-X ni ishga tushiring:")
+    print("  2. JARVIS-X ni ishga tushiring:")
     if current_os == "Windows":
         print(f"     {_GREEN}jarvis.bat{_RESET}       — Windows launcher")
     else:
         print(f"     {_GREEN}./jarvis{_RESET}          — Linux/macOS launcher")
     print(f"     {_GREEN}python start.py{_RESET}  — To'g'ridan-to'g'ri ishga tushirish")
     print(f"     {_GREEN}python start.py --life-only{_RESET}  — Faqat Life Assistant\n")
-    print(f"  3. Diagnostika:")
+    print("  3. Diagnostika:")
     print(f"     {_GREEN}python health_check.py{_RESET}  — Tizim salomatligini tekshirish\n")
     _sep()
 

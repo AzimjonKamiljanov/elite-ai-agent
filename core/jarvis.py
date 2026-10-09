@@ -7,24 +7,23 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 from .ai_router import AIRouter
 from .auto_mode import AutoModeSwitcher
 from .education import SmartEducation
 from .intelligence import (
-    CognitiveLoadBalancer,
-    TimePerceptionEngine,
-    AntiProcrastinationEngine,
-    LifeNarrativeEngine,
     AITutorMode,
+    AntiProcrastinationEngine,
+    CognitiveLoadBalancer,
+    LifeNarrativeEngine,
     PersonalityAdapter,
+    TimePerceptionEngine,
 )
-from .modes import ModeManager
 from .language import LanguageDetector
 from .memory import MemoryManager
-from .tools import ToolRegistry
+from .modes import ModeManager
 from .rag import RAGEngine
+from .tools import ToolRegistry
 
 _MODE_COMMANDS = {
     "/fast": "fast",
@@ -88,7 +87,7 @@ class Jarvis:
         self,
         default_mode: str = "pro",
         voice_enabled: bool = False,
-        rag_dir: Optional[str] = None,
+        rag_dir: str | None = None,
     ) -> None:
         self.router = AIRouter()
         self.mode_manager = ModeManager(default_mode=default_mode)
@@ -350,8 +349,8 @@ class Jarvis:
         if cmd == "/overload":
             hw = self._get_homework_manager()
             if hw is not None:
-                result = self.education.check_overload(hw)
-                return result or "✅ Hozircha ish yuki normal. Davom eting!"
+                res = self.education.check_overload(hw)
+                return str(res) if res else "✅ Hozircha ish yuki normal. Davom eting!"
             return "✅ Ish yuki tekshirildi — normal."
 
         # /today — bugungi to'liq plan
@@ -442,14 +441,14 @@ class Jarvis:
             system_prompt += memory_context
 
         # Xabarlar ro'yxatini tayyorlash
-        messages: list[dict] = [{"role": "system", "content": system_prompt}]
-        messages.extend(self.memory.get_conversation_history())
+        context_messages: list[dict] = [{"role": "system", "content": system_prompt}]
+        context_messages.extend(self.memory.get_conversation_history())
 
         # AI ga so'rov yuborish
         mode = self.mode_manager.get_current_mode_name()
         try:
             response = self.router.route_request(
-                messages=messages,
+                messages=context_messages,
                 mode=mode,
             )
         except Exception as exc:

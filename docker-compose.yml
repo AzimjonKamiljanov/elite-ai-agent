@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  jarvis:
+    build: .
+    container_name: jarvis_ai_agent
+    volumes:
+      - ./data:/app/data
+    env_file:
+      - .env
+    restart: unless-stopped
+    command: ["python", "start.py"]

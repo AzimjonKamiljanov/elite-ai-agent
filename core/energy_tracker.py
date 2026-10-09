@@ -4,9 +4,8 @@ JARVIS Energy & Mood Tracker.
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Optional
 
 _ENERGY_FILE = Path("data/energy.json")
 _TASHKENT_TZ = timezone(timedelta(hours=5))
@@ -93,7 +92,7 @@ class EnergyTracker:
         self._save()
         return entry
 
-    def get_today_energy(self) -> Optional[dict]:
+    def get_today_energy(self) -> dict | None:
         """Bugungi energiya yozuvi."""
         today = _today_str()
         for rec in reversed(self._records):
@@ -130,7 +129,7 @@ class EnergyTracker:
         return low_streak >= 3
 
     def get_suggestion(
-        self, today: Optional[dict] = None, burnout: Optional[bool] = None
+        self, today: dict | None = None, burnout: bool | None = None
     ) -> str:
         """Bugungi energiyaga qarab taklif.
 

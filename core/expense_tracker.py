@@ -4,11 +4,9 @@ JARVIS Lightweight Expense Tracker.
 from __future__ import annotations
 
 import json
-import os
 import uuid
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Optional
 
 _EXPENSE_FILE = Path("data/expenses.json")
 _TASHKENT_TZ = timezone(timedelta(hours=5))

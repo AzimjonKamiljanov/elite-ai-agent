@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import os
 import platform
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 
 TASHKENT_TZ = timezone(timedelta(hours=5))
 

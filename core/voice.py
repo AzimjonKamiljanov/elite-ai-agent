@@ -5,16 +5,14 @@ Bog'liqliklar yo'q bo'lsa, graceful fallback.
 
 from __future__ import annotations
 
-from typing import Optional
-
 
 class VoiceEngine:
     """Ovoz kiritish va chiqarish tizimi."""
 
     def __init__(self, enabled: bool = False) -> None:
         self._enabled = enabled
-        self._whisper_model: Optional[object] = None
-        self._tts_engine: Optional[str] = None
+        self._whisper_model: object | None = None
+        self._tts_engine: str | None = None
         if enabled:
             self._init_stt()
             self._init_tts()
@@ -81,9 +79,9 @@ class VoiceEngine:
 
         try:
             import tempfile
+
             import sounddevice as sd  # type: ignore
             import soundfile as sf  # type: ignore
-            import numpy as np  # type: ignore
 
             samplerate = 16000
             duration = 5  # sekund

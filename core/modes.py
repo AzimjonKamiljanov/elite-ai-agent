@@ -4,9 +4,6 @@ Mode tizimi — FAST, CODE, PRO va kengaytirilgan rejimlarni boshqarish.
 
 from __future__ import annotations
 
-from typing import Optional
-
-
 _MODES: dict[str, dict] = {
     "fast": {
         "name": "FAST",
@@ -140,7 +137,7 @@ class ModeManager:
     def __init__(self, default_mode: str = "pro") -> None:
         self._current_mode = default_mode if default_mode in _MODES else "pro"
 
-    def get_mode(self, name: Optional[str] = None) -> dict:
+    def get_mode(self, name: str | None = None) -> dict:
         """Berilgan yoki joriy rejim ma'lumotlarini qaytarish."""
         key = (name or self._current_mode).lower()
         return _MODES.get(key, _MODES["pro"])

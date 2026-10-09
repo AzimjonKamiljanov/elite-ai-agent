@@ -1,6 +1,5 @@
 import json
 from pathlib import Path
-from typing import Optional
 
 
 class LifeStorage:
@@ -71,7 +70,7 @@ class LifeStorage:
         """Vazifalarni saqlash."""
         self._write_file(self.tasks_file, tasks)
 
-    def load_daily_plan(self, date: str) -> Optional[dict]:
+    def load_daily_plan(self, date: str) -> dict | None:
         """Ma'lum kun uchun rejani yuklash."""
         plans = self._read_dict_file(self.plans_file)
         return plans.get(date)

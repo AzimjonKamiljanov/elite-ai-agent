@@ -6,7 +6,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-
 # Himoyalangan yo'llar — o'zgartirishga ruxsat yo'q
 _BLOCKED_PATHS = [
     "/etc",

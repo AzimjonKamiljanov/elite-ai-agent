@@ -1,5 +1,7 @@
 import pytest
+
 from core.ai_router import AIRouter
+
 
 def test_set_provider_invalid_name():
     router = AIRouter()

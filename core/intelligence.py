@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import time
 from datetime import datetime, timedelta
-from typing import Optional
 
 
 class CognitiveLoadBalancer:
@@ -74,7 +73,7 @@ class TimePerceptionEngine:
     """Structures time using Pomodoro cycles and deep-work focus sessions."""
 
     def __init__(self) -> None:
-        self._focus_start: Optional[float] = None
+        self._focus_start: float | None = None
         self._focus_duration: int = 25
         self._sessions_completed: int = 0
 
@@ -144,7 +143,7 @@ class AntiProcrastinationEngine:
     _STALE_DAYS = 3
     _MAX_DESCRIPTION_LENGTH = 30
 
-    def check_procrastination(self, homework_mgr) -> Optional[str]:
+    def check_procrastination(self, homework_mgr) -> str | None:
         """Check if any tasks have been pending for more than 3 days."""
         try:
             pending = homework_mgr.get_pending_homework()

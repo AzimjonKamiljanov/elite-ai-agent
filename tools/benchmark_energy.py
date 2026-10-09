@@ -1,12 +1,12 @@
-import time
-import sys
 import os
-from pathlib import Path
+import sys
+import time
 
 # Add the current directory to sys.path to import core
 sys.path.append(os.getcwd())
 
 from core.energy_tracker import EnergyTracker
+
 
 def setup_data(num_records=1000):
     tracker = EnergyTracker()

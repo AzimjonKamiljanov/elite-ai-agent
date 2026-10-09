@@ -5,10 +5,8 @@ Lokal hujjatlarni indekslash va ulardan ma'lumot qidirish.
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
-from typing import Any, Optional
-
+from typing import Any
 
 _SUPPORTED_EXTENSIONS = {".txt", ".py", ".md", ".json", ".csv", ".pdf"}
 _CHUNK_SIZE = 500
@@ -89,7 +87,7 @@ class RAGEngine:
     def _ingest_pdf(self, path: Path) -> int:
         """PDF faylni o'qish (PyMuPDF bo'lsa)."""
         try:
-            import fitz  # type: ignore — PyMuPDF
+            import fitz  # type: ignore
 
             doc = fitz.open(str(path))
             text = "\n".join(page.get_text() for page in doc)

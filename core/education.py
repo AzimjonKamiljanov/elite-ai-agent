@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import time
 from datetime import datetime
-from typing import Optional
 
 
 class SmartEducation:
@@ -15,12 +14,12 @@ class SmartEducation:
     def __init__(self) -> None:
         self._class_alert_minutes: int = 15
         self._study_sessions: list[dict] = []
-        self._focus_start: Optional[float] = None
+        self._focus_start: float | None = None
         self._focus_duration: int = 25
 
     # === Class Monitoring ===
 
-    def check_upcoming_class(self, scheduler) -> Optional[str]:
+    def check_upcoming_class(self, scheduler) -> str | None:
         """Yaqinlashayotgan darsni tekshirish va ogohlantirish."""
         try:
             classes = scheduler.get_schedule()
@@ -108,7 +107,7 @@ class SmartEducation:
             f"📵 Distraksiyalarni bloklang!"
         )
 
-    def check_focus(self) -> Optional[str]:
+    def check_focus(self) -> str | None:
         """Focus timer holatini tekshirish."""
         if self._focus_start is None:
             return None
@@ -133,7 +132,7 @@ class SmartEducation:
 
     # === Stress / Overload Detection ===
 
-    def check_overload(self, homework_mgr) -> Optional[str]:
+    def check_overload(self, homework_mgr) -> str | None:
         """Ish yukini tekshirish va ogohlantirish."""
         try:
             stats = homework_mgr.get_stats()

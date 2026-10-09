@@ -1,7 +1,6 @@
 from datetime import datetime
-from typing import Optional
 
-from life.models import ClassSchedule, DayOfWeek, ClassStatus
+from life.models import ClassSchedule, DayOfWeek
 from life.storage import LifeStorage
 
 
@@ -55,7 +54,7 @@ class SmartScheduler:
             return True
         return False
 
-    def update_class(self, class_id: str, **kwargs) -> Optional[ClassSchedule]:
+    def update_class(self, class_id: str, **kwargs) -> ClassSchedule | None:
         """Darsni yangilash."""
         for i, cls in enumerate(self._schedule):
             if cls.id == class_id:
@@ -67,7 +66,7 @@ class SmartScheduler:
                 return updated
         return None
 
-    def get_schedule(self, day: Optional[str] = None) -> list[ClassSchedule]:
+    def get_schedule(self, day: str | None = None) -> list[ClassSchedule]:
         """Jadval olish. day=None bo'lsa bugungi jadval."""
         target_day = day.lower() if day else self._get_today_day_name()
         return sorted(
@@ -91,7 +90,7 @@ class SmartScheduler:
         """Bugungi darslar ro'yxati, vaqt bo'yicha tartiblangan."""
         return self.get_schedule()
 
-    def get_current_class(self) -> Optional[ClassSchedule]:
+    def get_current_class(self) -> ClassSchedule | None:
         """Hozir davom etayotgan dars (agar bor bo'lsa)."""
         now = self._current_minutes()
         for cls in self.get_today_classes():
@@ -101,7 +100,7 @@ class SmartScheduler:
                 return cls
         return None
 
-    def get_next_class(self) -> tuple[Optional[ClassSchedule], int]:
+    def get_next_class(self) -> tuple[ClassSchedule | None, int]:
         """Keyingi dars va unga qolgan daqiqalar.
 
         Returns:
@@ -157,7 +156,7 @@ class SmartScheduler:
 
     # === Yordamchi ===
 
-    def find_class_by_prefix(self, id_prefix: str) -> Optional[ClassSchedule]:
+    def find_class_by_prefix(self, id_prefix: str) -> ClassSchedule | None:
         """ID prefiksi bo'yicha darsni topish."""
         for cls in self._schedule:
             if cls.id.startswith(id_prefix):
